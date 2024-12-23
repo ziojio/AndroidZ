@@ -13,7 +13,7 @@ public final class ClickUtil {
     }
 
     /**
-     * @param duration The duration of debouncing.
+     * @param duration The duration (in millisecond) of debouncing.
      */
     public static boolean isSingleClick(@NonNull View view, int duration) {
         Object time = view.getTag(R.id.view_tag_click_time);
@@ -23,27 +23,27 @@ public final class ClickUtil {
         return nowClickTime - lastClickTime > duration;
     }
 
-    public static boolean isDoubleClick(@NonNull View view) {
-        return isMultiClick(view, 2, 800);
-    }
+    public static abstract class OnSingleClickListener implements View.OnClickListener {
+        private long duration = 1000;
+        private boolean enabled = true;
+        private final Runnable ENABLE_AGAIN = () -> enabled = true;
 
-    /**
-     * @param count    The count of click.
-     * @param duration The duration of interval.
-     */
-    public static boolean isMultiClick(@NonNull View view, int count, int duration) {
-        Object time = view.getTag(R.id.view_tag_click_time);
-        long lastClickTime = time == null ? 0 : (long) time;
-        Object click = view.getTag(R.id.view_tag_click_count);
-        long clickCount = click == null ? 0 : (long) click;
-        long nowClickTime = SystemClock.uptimeMillis();
-        if (nowClickTime - lastClickTime < duration) {
-            clickCount++;
-        } else {
-            clickCount = 1;
+        public OnSingleClickListener() {
         }
-        view.setTag(R.id.view_tag_click_time, nowClickTime);
-        view.setTag(R.id.view_tag_click_count, clickCount);
-        return clickCount == count;
+
+        public OnSingleClickListener(long duration) {
+            this.duration = duration;
+        }
+
+        @Override
+        public final void onClick(View v) {
+            if (enabled) {
+                enabled = false;
+                v.postDelayed(ENABLE_AGAIN, duration);
+                onSingleClick(v);
+            }
+        }
+
+        public abstract void onSingleClick(View v);
     }
 }

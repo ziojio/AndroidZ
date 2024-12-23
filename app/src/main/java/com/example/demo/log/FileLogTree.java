@@ -5,7 +5,6 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import timber.log.Timber;
 
 public class FileLogTree extends Timber.DebugTree implements Handler.Callback {
     private SimpleDateFormat dateFormat;
-    private BufferedWriter fileWriter;
+    private FileWriter fileWriter;
     private HandlerThread handlerThread;
     private Handler handler;
 
@@ -33,7 +32,7 @@ public class FileLogTree extends Timber.DebugTree implements Handler.Callback {
                 }
                 file.createNewFile();
             }
-            fileWriter = new BufferedWriter(new FileWriter(file, true));
+            fileWriter = new FileWriter(file, true);
             dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
             handlerThread = new HandlerThread("FileLog");
             handlerThread.start();
@@ -59,6 +58,7 @@ public class FileLogTree extends Timber.DebugTree implements Handler.Callback {
         if (fileWriter != null) {
             try {
                 fileWriter.write((String) msg.obj);
+                fileWriter.flush();
             } catch (IOException ignored) {
             }
         }

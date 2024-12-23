@@ -22,29 +22,26 @@ import androidx.annotation.Nullable;
 public final class FileUtil {
     private static final String TAG = "FileUtil";
 
-    /**
-     * 根据文件路径获取文件
-     */
     @Nullable
     public static File getFileByPath(String filePath) {
         return filePath == null || filePath.isBlank() ? null : new File(filePath);
     }
 
-    public static boolean isFileExists(File file) {
+    public static boolean isExistsFile(File file) {
         if (file == null) return false;
         return file.exists();
     }
 
-    public static boolean isFileExists(String filePath) {
-        return isFileExists(getFileByPath(filePath));
+    public static boolean isExistsFile(String filePath) {
+        return isExistsFile(getFileByPath(filePath));
     }
 
-    public static boolean isDirExists(File dir) {
+    public static boolean isExistsDir(File dir) {
         return dir != null && dir.exists() && dir.isDirectory();
     }
 
-    public static boolean isDirExists(String dirPath) {
-        return isDirExists(getFileByPath(dirPath));
+    public static boolean isExistsDir(String dirPath) {
+        return isExistsDir(getFileByPath(dirPath));
     }
 
     public static boolean createDir(String dirPath) {
@@ -56,13 +53,8 @@ public final class FileUtil {
         return file.exists() ? file.isDirectory() : file.mkdirs();
     }
 
-    public static boolean rename(String filePath, String newName) {
-        return rename(getFileByPath(filePath), newName);
-    }
-
     public static boolean rename(File file, String newName) {
-        if (file == null) return false;
-        if (!file.exists()) return false;
+        if (file == null || !file.exists()) return false;
         if (newName == null || newName.isBlank()) return false;
         if (newName.equals(file.getName())) return true;
         File newFile = new File(file.getParent(), newName);
@@ -89,6 +81,12 @@ public final class FileUtil {
     }
 
     /**
+     * Delete only files in directory.
+     */
+    public static boolean deleteFiles(@NonNull File dir) {
+        return deleteContents(dir, File::isFile);
+    }
+    /**
      * Delete directory.
      */
     public static boolean deleteDir(@NonNull File dir) {
@@ -97,13 +95,6 @@ public final class FileUtil {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Delete only files in directory.
-     */
-    public static boolean deleteFiles(@NonNull File dir) {
-        return deleteContents(dir, File::isFile);
     }
 
     /**

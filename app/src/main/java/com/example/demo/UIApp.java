@@ -9,9 +9,9 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.example.demo.database.room.AppDB;
-import com.example.demo.database.room.entity.TrackLog;
 import com.example.demo.log.FileLogTree;
 import com.example.demo.log.LogUtil;
 import com.tencent.mmkv.MMKV;
@@ -32,6 +32,7 @@ public class UIApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("UIApp", "onCreate " + this);
         App = this;
         long start = SystemClock.elapsedRealtime();
         if (AppUtil.isDebuggable()) {
@@ -48,12 +49,11 @@ public class UIApp extends Application {
             Timber.plant(new Timber.DebugTree() {
                 @Override
                 protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-                    LogUtil.saveLog(new TrackLog(tag, message));
                     super.log(priority, tag, message, t);
+                    // LogUtil.saveLog(new TrackLog(tag, message));
                 }
             });
         }
-        Timber.d("onCreate " + this);
 
         MMKV.initialize(this);
         appDB = AppDB.create(this);
@@ -61,7 +61,7 @@ public class UIApp extends Application {
 
         registerDefaultNetworkCallback();
 
-        Timber.d("onCreate cost time " + time + "ms");
+        Log.d("UIApp", "onCreate cost " + time + "ms");
     }
 
     public static UIApp getApp() {

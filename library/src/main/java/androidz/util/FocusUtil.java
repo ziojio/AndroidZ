@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public final class FocusUtil {
@@ -21,14 +22,14 @@ public final class FocusUtil {
         view.post(() -> {
             focusParent(view);
             view.clearFocus();
-            KeyboardUtil.hideKeyboard(view);
+            KeyboardUtil.hideSoftKeyboard(view);
         });
     }
 
     public static void clearFocus(@NonNull Activity activity) {
         View currentFocus = activity.getCurrentFocus();
         if (currentFocus != null && currentFocus.getWindowToken() != null) {
-            InputMethodManager imm = ContextCompat.getSystemService(activity, InputMethodManager.class);
+            InputMethodManager imm = getSystemService(activity, InputMethodManager.class);
             if (imm != null && imm.isActive()) {
                 clearFocus(currentFocus);
             }

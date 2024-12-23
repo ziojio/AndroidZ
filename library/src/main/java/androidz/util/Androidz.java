@@ -19,7 +19,7 @@ public final class Androidz {
     @NonNull
     public static Context getContext() {
         if (appContext == null)
-            throw new IllegalStateException("not initialize");
+            throw new IllegalStateException("Androidz not initialize.");
         return appContext;
     }
 

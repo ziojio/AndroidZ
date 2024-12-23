@@ -12,15 +12,11 @@ public final class AppUtil {
 
     @NonNull
     public static PackageInfo getPackageInfo(@NonNull Context context, int flags) {
-        PackageInfo packageInfo;
         try {
-            String pn = context.getPackageName();
-            PackageManager pm = context.getPackageManager();
-            packageInfo = pm.getPackageInfo(pn, flags);
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), flags);
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return packageInfo;
     }
 
     @NonNull
@@ -41,7 +37,8 @@ public final class AppUtil {
     }
 
     public static boolean isDebuggable() {
-        return (Androidz.getContext().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        ApplicationInfo info = Androidz.getContext().getApplicationInfo();
+        return (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 
     public static boolean isFirstInstall() {

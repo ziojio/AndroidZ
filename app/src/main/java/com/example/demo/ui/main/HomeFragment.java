@@ -2,7 +2,6 @@ package com.example.demo.ui.main;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -107,7 +106,26 @@ public class HomeFragment extends BaseFragment {
                         case execute -> {
                             Timber.d("execute");
                             // logBuildInfo();
-                            showInternet();
+                            // showInternet();
+                            // Calendar date = Calendar.getInstance();
+                            // File file = new File(LogUtil.getLogDir(requireContext()), LogUtil.getLogFileName(date.getTime()));
+                            // Timber.d("MD5 " + ByteString.of(FileUtil.getFileMD5(file)).hex());
+                            // AtomicInteger atomicInteger = new AtomicInteger(1);
+                            // new AlertDialog.Builder(requireActivity())
+                            //         .setTitle("请选择设备类型")
+                            //         .setSingleChoiceItems(new String[]{"单独人脸设备", "三合一设备"}, 1, new DialogInterface.OnClickListener() {
+                            //             @Override
+                            //             public void onClick(DialogInterface dialog, int which) {
+                            //                 Timber.d("setSingleChoiceItems which=" + which);
+                            //                 atomicInteger.set(which);
+                            //             }
+                            //         })
+                            //         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            //             @Override
+                            //             public void onClick(DialogInterface dialog, int which) {
+                            //
+                            //             }
+                            //         }).setNegativeButton("取消", null).show();
                         }
                         case popup -> {
                             if (popupWindow == null) {
@@ -117,13 +135,15 @@ public class HomeFragment extends BaseFragment {
                             // popupWindow.showPopupWindow(100, 100);
                         }
                         case dialog -> {
-                            int orientation = requireActivity().getRequestedOrientation();
-                            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+                            LoadingDialog.showLoading(requireActivity());
 
-                            LoadingDialog.Options options = new LoadingDialog.Options();
-                            options.cancelable = true;
-                            options.onDismissListener = x -> requireActivity().setRequestedOrientation(orientation);
-                            LoadingDialog.showLoading(requireActivity(), options);
+                            mHandler.postDelayed(() -> {
+                                LoadingDialog.hide();
+
+                                LoadingDialog.Options options = new LoadingDialog.Options();
+                                options.cancelable = true;
+                                LoadingDialog.showLoading(requireActivity(), options);
+                            }, 3000);
                         }
                         case snackbar -> showSnackbar(textView);
                         case webview ->
